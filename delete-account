@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delete Account — DevSpace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lime: #b8ff57;
+    --ink: #0a0a0f;
+    --ink2: #111118;
+    --muted: #2a2a38;
+    --text: #e8e8f0;
+    --sub: #7a7a99;
+    --red: #ff4f4f;
+    --red-dim: #3a1010;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(184,255,87,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184,255,87,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 64px 24px 80px;
+  }
+
+  /* Header */
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--lime);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 56px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--lime);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 5px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--lime); }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--sub);
+    line-height: 1.7;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--ink2);
+    border: 1px solid var(--muted);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(184,255,87,0.25); }
+
+  .card-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--lime);
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+  }
+
+  .card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    font-size: 14px;
+    color: var(--sub);
+    line-height: 1.65;
+  }
+
+  /* Warning box */
+  .warning {
+    background: var(--red-dim);
+    border: 1px solid rgba(255,79,79,0.35);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .warning-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .warning p { font-size: 14px; color: #ff9999; line-height: 1.6; }
+  .warning strong { color: var(--red); }
+
+  /* Data list */
+  .data-section {
+    background: var(--ink2);
+    border: 1px solid var(--muted);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+  .data-section h3 {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--lime);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--muted);
+    font-size: 14px;
+  }
+  .data-row:last-child { border-bottom: none; }
+  .data-label { color: var(--text); }
+  .data-status {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .deleted { background: rgba(255,79,79,0.12); color: var(--red); border: 1px solid rgba(255,79,79,0.3); }
+  .kept { background: rgba(184,255,87,0.08); color: var(--lime); border: 1px solid rgba(184,255,87,0.2); }
+
+  /* Contact */
+  .contact-box {
+    background: var(--ink2);
+    border: 1px solid var(--muted);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+  .contact-box h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .contact-box p {
+    font-size: 14px;
+    color: var(--sub);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+  .email-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(184,255,87,0.08);
+    border: 1px solid rgba(184,255,87,0.25);
+    color: var(--lime);
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .email-link:hover {
+    background: rgba(184,255,87,0.15);
+    border-color: var(--lime);
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer p { font-size: 12px; color: var(--sub); }
+  .footer a { color: var(--lime); text-decoration: none; font-size: 12px; }
+
+  @media (max-width: 480px) {
+    .container { padding: 40px 16px 60px; }
+    .card { padding: 20px; }
+    .data-section { padding: 20px; }
+    .contact-box { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo">DevSpace by ARKA Studios</div>
+
+  <div class="tag">⚠ Permanent Action</div>
+  <h1>Delete Your<br><span>Account</span></h1>
+  <p class="subtitle">Deleting your DevSpace account is permanent and cannot be undone. Please read the steps and data information below before proceeding.</p>
+
+  <!-- Steps -->
+  <div class="card">
+    <div class="card-num">STEP 01</div>
+    <h3>Open the DevSpace App</h3>
+    <p>Launch the DevSpace app on your Android device and make sure you are logged in to the account you want to delete.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-num">STEP 02</div>
+    <h3>Go to Profile Settings</h3>
+    <p>Tap your profile avatar in the top right corner, then tap <strong>Settings</strong> from the menu that appears.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-num">STEP 03</div>
+    <h3>Select "Delete Account"</h3>
+    <p>Scroll to the bottom of the Settings page and tap <strong>Delete Account</strong>. You will be asked to confirm your identity.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-num">STEP 04</div>
+    <h3>Confirm Deletion</h3>
+    <p>Type <strong>DELETE</strong> in the confirmation field and tap the red Delete button. Your account deletion will begin immediately.</p>
+  </div>
+
+  <!-- Warning -->
+  <div class="warning">
+    <div class="warning-icon">🗑️</div>
+    <p><strong>Processing time:</strong> Account and associated data will be permanently removed from our systems within <strong>30 days</strong> of your request. Some anonymized data may be retained for legal or fraud prevention purposes.</p>
+  </div>
+
+  <!-- Data table -->
+  <div class="data-section">
+    <h3>WHAT HAPPENS TO YOUR DATA</h3>
+    <div class="data-row">
+      <span class="data-label">Profile & display name</span>
+      <span class="data-status deleted">Deleted</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Projects & posts</span>
+      <span class="data-status deleted">Deleted</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Aura score & reputation</span>
+      <span class="data-status deleted">Deleted</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Profile photo & uploaded media</span>
+      <span class="data-status deleted">Deleted</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">GitHub connection</span>
+      <span class="data-status deleted">Deleted</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Anonymized usage analytics</span>
+      <span class="data-status kept">Retained (anonymized)</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Transaction records (if any)</span>
+      <span class="data-status kept">Retained (legal requirement)</span>
+    </div>
+  </div>
+
+  <!-- Contact -->
+  <div class="contact-box">
+    <h3>Can't access the app?</h3>
+    <p>If you are unable to log in or access Settings to delete your account, you can request deletion by emailing us directly. Please include the email address associated with your DevSpace account and we will process your request within 7 business days.</p>
+    <a href="mailto:privacy@arkastudios.in" class="email-link">✉ privacy@arkastudios.in</a>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 ARKA Studios. All rights reserved.</p>
+    <a href="privacy-policy.html">Privacy Policy →</a>
+  </div>
+
+</div>
+</body>
+</html>
